@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, Query, Path
 from app.models import (
     Item, DrinkType, DrinkMaster, DrinkType,
     fake_drink_db, fake_maker_db)
@@ -15,7 +15,7 @@ def read_root():
 
 @app.get("/items/{item_id}")
 def read_item(
-    item_id: int, 
+    item_id: Annotated[int, Path(title="OK", description="item ID", lt=19)], 
     q: Annotated[
         str | None,
         Query(
