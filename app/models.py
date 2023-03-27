@@ -1,5 +1,6 @@
 from enum import Enum
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, EmailStr
+
 
 #! ----------------------------
 #! Choices
@@ -19,10 +20,27 @@ class Item(BaseModel):
     is_offer: bool = False
 
 
+class BaseUser(BaseModel):
+    username: str
+    email: EmailStr
+
+
+class UserIn(BaseUser):
+    password: str 
+
+
+class UserOut(BaseUser):
+    pass
+
+
+class UserInDB(BaseUser):
+    hashed_password: str
+
+
 class Maker(BaseModel):
     name: str
     state: str
-    country: str
+    country: str = Field(example="United States")
 
 
 class DrinkMaster(BaseModel):
@@ -31,6 +49,20 @@ class DrinkMaster(BaseModel):
     name: str
     amount: int
     price: float
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "drink_type": DrinkType.BEER,
+                "name": "Mind Circus",
+                "maker": Maker(
+                    name="Russian River Brewing", 
+                    state="California", 
+                    country="United States"),
+                "price": 35.4,
+                "amount": 355,
+            }
+        }
     
 #! ----------------------------
 #! Fake Data
