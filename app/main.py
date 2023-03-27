@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi import FastAPI, Query, Path
+from fastapi import FastAPI, Query, Path, Body
 from app.models import (
     Item, DrinkType, DrinkMaster, DrinkType,
     fake_drink_db, fake_maker_db)
@@ -38,6 +38,12 @@ async def get_drinks(skip: int = 0, limit: int = 10):
     """You can get the drink list"""
     return fake_drink_db[skip: skip + limit]
 
+@app.post("/drink")
+async def create_drink(
+    drink_master: Annotated[DrinkMaster, Body(description="New DrinkMaster")]
+):
+    """Create a new drink master"""
+    return {"drink_master": drink_master, "message": "created"}
 
 @app.get("/drink/{drink_id}")
 async def get_drink(drink_id: int, q2:str, q: str|None = None):
@@ -53,4 +59,5 @@ async def get_drink_type(drink_type: DrinkType):
     elif drink_type is DrinkType.SAKE:
         return {"drink_type": drink_type, "message": "Sake is a Japanese treasure !"}
     return {"drink_type": drink_type, "message": "Not sure what it is ... ?"}
+
 

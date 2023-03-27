@@ -1,17 +1,22 @@
 from enum import Enum
 from pydantic import BaseModel
 
-
-class Item(BaseModel):
-    name: str
-    price: float
-    is_offer: bool = False
-
-
+#! ----------------------------
+#! Choices
+#! ----------------------------
 class DrinkType(str, Enum):
     BEER = "beer"
     WINE = "wine"
     SAKE = "sake"
+
+
+#! ----------------------------
+#! Models
+#! ----------------------------
+class Item(BaseModel):
+    name: str
+    price: float
+    is_offer: bool = False
 
 
 class Maker(BaseModel):
@@ -27,7 +32,9 @@ class DrinkMaster(BaseModel):
     amount: int
     price: float
     
-
+#! ----------------------------
+#! Fake Data
+#! ----------------------------
 fake_maker_db = [
     Maker(name="Russian River Brewing", state="California", country="United States"),
     Maker(name="Knee Deep Brewing", state="California", country="United States"),
