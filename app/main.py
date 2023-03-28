@@ -1,6 +1,6 @@
 from uuid import UUID
 from typing import Annotated
-from fastapi import FastAPI, Query, Path, Body, Header
+from fastapi import FastAPI, Query, Path, Body, Header, status
 from app.models import (
     Item, DrinkType, DrinkMaster, DrinkType, Maker,
     fake_drink_db, fake_maker_db,
@@ -52,7 +52,7 @@ async def get_drinks(skip: int = 0, limit: int = 10)->list[DrinkMaster]:
     return fake_drink_db[skip: skip + limit]
 
 
-@app.post("/drink")
+@app.post("/drink", status_code=status.HTTP_201_CREATED)
 async def create_drink(
     drink_master: Annotated[DrinkMaster, Body(description="New DrinkMaster")]
 ):
@@ -89,7 +89,7 @@ def fake_save_user(user_in: UserIn):
     return user_in_db
 
 
-@app.post("/user/")
+@app.post("/user/", status_code=status.HTTP_201_CREATED)
 async def create_user(user_in: UserIn)->UserOut:
     user_saved = fake_save_user(user_in)
     return user_saved
