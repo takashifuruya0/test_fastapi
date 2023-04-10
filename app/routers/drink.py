@@ -1,7 +1,10 @@
 from typing import Annotated
+from datetime import date
 from fastapi import Body, status, routing
+from fastapi.encoders import jsonable_encoder
 from app.models import (
     Item, DrinkType, DrinkMaster, DrinkType, Maker,
+    DrinkReview, fake_review_db,
     fake_drink_db, fake_maker_db)
 
 
@@ -14,14 +17,20 @@ def update_item(item_id: int, item: Item):
     return {"item_name": item.name, "item_id": item_id}
 
 
+#!--------------------------------
+#! Maker
+#!--------------------------------
 @router.get("/maker")
-async def get_makers(skip: int = 0, limit: int = 10)->list[Maker]:
+async def list_makers(skip: int = 0, limit: int = 10)->list[Maker]:
     """You can get the maker list"""
     return fake_maker_db[skip: skip + limit]
 
 
+#!--------------------------------
+#! Drink
+#!--------------------------------
 @router.get("/drink")
-async def get_drinks(skip: int = 0, limit: int = 10)->list[DrinkMaster]:
+async def list_drinks(skip: int = 0, limit: int = 10)->list[DrinkMaster]:
     """You can get the drink list"""
     return fake_drink_db[skip: skip + limit]
 
@@ -39,6 +48,20 @@ async def get_drink(drink_id: int, q2:str, q: str|None = None):
     return {"drink": fake_drink_db[drink_id], "q": q, "q2": q2}
 
 
+@router.put("/drink/{drinkid}")
+async def update_drink(drink_id: int, drink_master: DrinkMaster)->DrinkMaster:
+    # existing data
+    stored_drink_master_model = fake_drink_db[drink_id]
+    # update
+    update_data = drink_master.dict(exclude_unset=True)
+    updated_item = stored_drink_master_model.copy(update=update_data)
+    fake_drink_db[drink_id] = jsonable_encoder(updated_item)
+    # return
+    return updated_item
+
+#!--------------------------------
+#! DrinkTYpe
+#!--------------------------------
 @router.get("/drink/{drink_type}")
 async def get_drink_type(drink_type: DrinkType):
     if drink_type is DrinkType.BEER:
@@ -49,3 +72,15 @@ async def get_drink_type(drink_type: DrinkType):
         return {"drink_type": drink_type, "message": "Sake is a Japanese treasure !"}
     return {"drink_type": drink_type, "message": "Not sure what it is ... ?"}
 
+
+#!--------------------------------
+#! Review
+#!--------------------------------
+@router.get("/review")
+async def list_reviews()->list[DrinkReview]:
+    return fake_review_db
+
+
+@router.get("/review/{review_id}")
+async def get_review(review_id:int)->DrinkReview|None:
+    return fake_review_db[review_id]
