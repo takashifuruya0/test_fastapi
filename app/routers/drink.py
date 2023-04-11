@@ -1,9 +1,9 @@
 from typing import Annotated
-from datetime import date
 from fastapi import Body, status, routing
 from fastapi.encoders import jsonable_encoder
+from app.depends import CommonsDep
 from app.models import (
-    Item, DrinkType, DrinkMaster, DrinkType, Maker,
+    DrinkType, DrinkMaster, DrinkType, Maker,
     DrinkReview, fake_review_db,
     fake_drink_db, fake_maker_db)
 
@@ -11,28 +11,23 @@ from app.models import (
 router = routing.APIRouter(tags=["drink", ])
 
 
-
-@router.put("/items/{item_id}")
-def update_item(item_id: int, item: Item):
-    return {"item_name": item.name, "item_id": item_id}
-
-
 #!--------------------------------
 #! Maker
 #!--------------------------------
 @router.get("/maker")
-async def list_makers(skip: int = 0, limit: int = 10)->list[Maker]:
+async def list_makers(commons: CommonsDep)->list[Maker]:
     """You can get the maker list"""
-    return fake_maker_db[skip: skip + limit]
+    return fake_maker_db[commons.skip: commons.skip + commons.limit]
+    
 
 
 #!--------------------------------
 #! Drink
 #!--------------------------------
 @router.get("/drink")
-async def list_drinks(skip: int = 0, limit: int = 10)->list[DrinkMaster]:
+async def list_drinks(commons: CommonsDep)->list[DrinkMaster]:
     """You can get the drink list"""
-    return fake_drink_db[skip: skip + limit]
+    return fake_drink_db[commons.skip: commons.skip + commons.limit]
 
 
 @router.post("/drink", status_code=status.HTTP_201_CREATED)
@@ -77,8 +72,8 @@ async def get_drink_type(drink_type: DrinkType):
 #! Review
 #!--------------------------------
 @router.get("/review")
-async def list_reviews()->list[DrinkReview]:
-    return fake_review_db
+async def list_reviews(commons: CommonsDep)->list[DrinkReview]:
+    return fake_review_db[commons.skip: commons.skip+commons.limit]
 
 
 @router.get("/review/{review_id}")
