@@ -1,4 +1,10 @@
+# fastapi
 fastapi
 uvicorn
 pydantic[email]
+# File
 python-multipart
+# JWT
+python-jose[cryptography]
+# Hash
+passlib[bcrypt]
