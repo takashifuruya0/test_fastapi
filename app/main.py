@@ -1,7 +1,11 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import HTTPException
-from app.routers import user, drink, base, file, error, auth
+from app.sql import models, database
+from app.routers import user, drink, base, file, error, auth, drink_db
+
+# create tables
+models.Base.metadata.create_all(bind=database.engine)
 
 app = FastAPI()
 
@@ -11,6 +15,7 @@ app.include_router(user.router, prefix="/user")
 app.include_router(drink.router)
 app.include_router(file.router, prefix="/file")
 app.include_router(error.router, tags=["error", ])
+app.include_router(drink_db.router, prefix="/v2")
 
 
 @app.exception_handler(HTTPException)

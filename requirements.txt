@@ -8,3 +8,5 @@ python-multipart
 python-jose[cryptography]
 # Hash
 passlib[bcrypt]
+# SQL (Relational) Databases
+sqlalchemy
