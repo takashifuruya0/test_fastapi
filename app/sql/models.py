@@ -29,3 +29,22 @@ class BeerDB(Base):
     style = Column(String, index=True, default="-")
 
     maker = relationship("MakerDB", back_populates="beers")
+    hops = relationship("HopsDB", secondary="relation_hops_beer", back_populates="beers")
+
+
+class HopsDB(Base):
+    __tablename__ = "hops"
+
+    id = Column(Integer, primary_key=True, index=True)
+    is_active = Column(Boolean, default=True)
+    name = Column(String, index=True, unique=True)
+    description = Column(String, index=True, nullable=True)
+
+    beers = relationship("BeerDB", secondary="relation_hops_beer", back_populates="hops")
+
+
+class RelationHopsBeerDB(Base):
+    __tablename__ = "relation_hops_beer"
+    id = Column(Integer, primary_key=True)
+    beer_id = Column(Integer, ForeignKey("beer.id"), primary_key=True)
+    hops_id = Column(Integer, ForeignKey("hops.id"), primary_key=True)

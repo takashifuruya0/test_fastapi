@@ -14,8 +14,22 @@ class DrinkType(str, Enum):
 
 class BeerStyle(str, Enum):
     DEFAULT = '-'
+    # IPA
     IPA = "IPA"
-    HAZY = "Hazy IPA"
+    DIPA = "Double IPA"
+    TIPA = "Triple IPA"
+    # WC
+    WC_IPA = 'West Coast IPA'
+    WC_DIPA = "Double West Coast IPA"
+    WC_TIPA = "Triple West Coast IPA"
+    # Hazy
+    HZ_IPA = "Hazy IPA"
+    HZ_DIPA = 'Double Hazy IPA'
+    HZ_TIPA = 'Triple Hazy IPA'
+    # Ale
+    PALE_ALE = "Pale Ale"
+    GOLDEN_ALE = 'Golden Ale'
+    # Lager
     PILSNER = 'Pilsner'
 
 
@@ -45,11 +59,28 @@ class MakerResponse(Maker):
 
 
 #?------------------
+#? Hops
+#?------------------
+class Hops(BaseModel):
+    is_active: bool 
+    name: str
+    description: str|None = None
+
+    class Config:
+        orm_mode = True
+
+
+class HopsCreate(Hops):
+    pass
+
+
+class HopsResponse(Hops):
+    id: int
+
+
+#?------------------
 #? Beer
 #?------------------
-
-
-
 class Beer(BaseModel):
     is_active: bool 
     name: str
@@ -64,8 +95,10 @@ class Beer(BaseModel):
 
 class BeerCreate(Beer):
     maker_id: int
+    # hops_ids: list[int]
 
 
 class BeerResponse(Beer):
     id: int
     maker: MakerResponse
+    hops: list[HopsResponse]
