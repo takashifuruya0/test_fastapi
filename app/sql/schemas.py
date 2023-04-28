@@ -37,50 +37,19 @@ class BeerStyle(str, Enum):
 #! Models
 #! ----------------------------
 #?------------------
-#? Maker
+#? Base
 #?------------------
 class Maker(BaseModel):
+    is_active: bool
     name: str
+    description: str
     state: str = Field(example="California")
     country: str = Field(example="United States")
-    description: str
-    is_active: bool = True
-
+    
     class Config:
         orm_mode = True
 
 
-class MakerCreate(Maker):
-    pass
-
-
-class MakerResponse(Maker):
-    id: int
-
-
-#?------------------
-#? Hops
-#?------------------
-class Hops(BaseModel):
-    is_active: bool 
-    name: str
-    description: str|None = None
-
-    class Config:
-        orm_mode = True
-
-
-class HopsCreate(Hops):
-    pass
-
-
-class HopsResponse(Hops):
-    id: int
-
-
-#?------------------
-#? Beer
-#?------------------
 class Beer(BaseModel):
     is_active: bool 
     name: str
@@ -93,9 +62,40 @@ class Beer(BaseModel):
         orm_mode = True
 
 
+class Hops(BaseModel):
+    is_active: bool 
+    name: str
+    description: str|None = None
+
+    class Config:
+        orm_mode = True
+
+
+#?------------------
+#? Create
+#?------------------
+class HopsCreate(Hops):
+    pass
+
+
+class MakerCreate(Maker):
+    pass
+
+
 class BeerCreate(Beer):
     maker_id: int
-    # hops_ids: list[int]
+
+
+#?------------------
+#? Response
+#?------------------
+class HopsResponse(Hops):
+    id: int
+
+
+class MakerResponse(Maker):
+    id: int
+    beers: list[Beer]
 
 
 class BeerResponse(Beer):
