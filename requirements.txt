@@ -12,3 +12,6 @@ passlib[bcrypt]
 sqlalchemy
 # migragtion
 alembic
+# test
+pytest
+httpx
