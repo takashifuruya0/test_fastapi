@@ -1,7 +1,7 @@
 from typing import Annotated
 from fastapi import Path, Query, Header, routing, Depends
-from app.models import Item
-from app.depends import CookieAndQuery, verify_key, verify_token
+from models import Item
+from depends import CookieAndQuery, verify_key, verify_token
 
 
 router = routing.APIRouter(tags=["base"], dependencies=[Depends(verify_token), Depends(verify_key)])

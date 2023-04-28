@@ -1,8 +1,8 @@
 from fastapi import routing, Depends
 from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session
-from app.sql import crud, models, schemas
-from app.sql.database import SessionLocal, engine
+from sql import crud, models, schemas
+from sql.database import SessionLocal, engine
 
 
 router = routing.APIRouter(tags=["drink_db"])

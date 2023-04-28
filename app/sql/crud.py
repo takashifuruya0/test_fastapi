@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from app.sql import models, schemas
+from sql import models, schemas
 
 
 #?=============================

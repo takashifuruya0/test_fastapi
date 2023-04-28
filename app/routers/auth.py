@@ -5,7 +5,7 @@ from passlib.context import CryptContext
 from fastapi import routing, Depends, status
 from fastapi.exceptions import HTTPException
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from app.models import UserInDB, BaseUser, Token, TokenData, fake_users_db
+from models import UserInDB, BaseUser, Token, TokenData, fake_users_db
 
 router = routing.APIRouter(tags=['auth'])
 

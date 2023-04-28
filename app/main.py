@@ -1,8 +1,8 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import HTTPException
-from app.sql import models, database
-from app.routers import user, drink, base, file, error, auth, drink_db, background
+from sql import models, database
+from routers import user, drink, base, file, error, auth, drink_db, background
 
 # create tables
 models.Base.metadata.create_all(bind=database.engine)

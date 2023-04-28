@@ -1,8 +1,8 @@
 from typing import Annotated
 from fastapi import Body, status, routing
 from fastapi.encoders import jsonable_encoder
-from app.depends import CommonsDep
-from app.models import (
+from depends import CommonsDep
+from models import (
     DrinkType, DrinkMaster, DrinkType, Maker,
     DrinkReview, fake_review_db,
     fake_drink_db, fake_maker_db)

@@ -1,6 +1,6 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Float
 from sqlalchemy.orm import relationship
-from app.sql.database import Base
+from sql.database import Base
 
 
 class MakerDB(Base):
@@ -26,5 +26,6 @@ class BeerDB(Base):
     maker_id = Column(Integer, ForeignKey("maker.id"))
     ibu = Column(Integer, nullable=True)
     abv = Column(Float, nullable=True)
+    style = Column(String, index=True, default="-")
 
     maker = relationship("MakerDB", back_populates="beers")

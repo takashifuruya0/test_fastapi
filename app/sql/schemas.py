@@ -12,6 +12,13 @@ class DrinkType(str, Enum):
     SAKE = "sake"
 
 
+class BeerStyle(str, Enum):
+    DEFAULT = '-'
+    IPA = "IPA"
+    HAZY = "Hazy IPA"
+    PILSNER = 'Pilsner'
+
+
 #! ----------------------------
 #! Models
 #! ----------------------------
@@ -40,12 +47,16 @@ class MakerResponse(Maker):
 #?------------------
 #? Beer
 #?------------------
+
+
+
 class Beer(BaseModel):
     is_active: bool 
     name: str
     description: str
     ibu: int|None
     abv: float|None
+    style: BeerStyle = BeerStyle.DEFAULT
 
     class Config:
         orm_mode = True

@@ -1,6 +1,6 @@
 from typing import Annotated
 from fastapi import Form, status, routing
-from app.models import UserIn, UserOut, UserInDB
+from models import UserIn, UserOut, UserInDB
 
 
 router = routing.APIRouter(tags=["user", ])
