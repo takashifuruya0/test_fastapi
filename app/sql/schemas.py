@@ -71,6 +71,29 @@ class Hops(BaseModel):
         orm_mode = True
 
 
+class Purchase(BaseModel):
+    is_active: bool
+    description: str|None = None
+    # beer: Beer
+    date_purchase: date
+    date_untapped: date|None
+    date_emptied: date|None
+
+    class Config:
+        orm_mode = True
+
+
+class DrinkRecord(BaseModel):
+    is_active: bool
+    description: str|None = None
+    amount: int
+    date: date
+    # purchase: Purchase
+
+    class Config:
+        orm_mode = True
+
+
 #?------------------
 #? Create
 #?------------------
@@ -86,6 +109,40 @@ class BeerCreate(Beer):
     maker_id: int
 
 
+class PurchaseCreate(Purchase):
+    beer_id: int
+
+
+class DrinkRecordCreate(DrinkRecord):
+    purchase_id: int
+
+
+#?------------------
+#? SimpleResponse
+#?------------------
+class HopsSimpleResponse(Hops):
+    id: int
+
+
+class MakerSimpleResponse(Maker):
+    id: int
+
+
+class BeerSimpleResponse(Beer):
+    id: int
+    maker: MakerSimpleResponse
+    
+
+class PurchaseSimpleResponse(Purchase):
+    id: int
+    # beer: BeerSimpleResponse
+
+
+class DrinkRecordSimpleResponse(DrinkRecord):
+    id: int
+    # purchase: PurchaseSimpleResponse
+
+
 #?------------------
 #? Response
 #?------------------
@@ -95,10 +152,22 @@ class HopsResponse(Hops):
 
 class MakerResponse(Maker):
     id: int
-    beers: list[Beer]
+    beers: list[BeerSimpleResponse]
 
 
 class BeerResponse(Beer):
     id: int
-    maker: MakerResponse
-    hops: list[HopsResponse]
+    maker: MakerSimpleResponse
+    hops: list[HopsSimpleResponse]
+
+
+class PurchaseResponse(Purchase):
+    id: int
+    beer: BeerSimpleResponse
+    drink_records: list[DrinkRecordSimpleResponse]
+    amount_drink: int = 0
+
+
+class DrinkRecordResponse(DrinkRecord):
+    id: int
+    purchase: PurchaseSimpleResponse

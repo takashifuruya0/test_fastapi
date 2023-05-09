@@ -69,3 +69,24 @@ def list_hops(commons: CommonsDep, db: Session = Depends(get_db)):
         db=db, skip=commons.skip, limit=commons.limit)
     return hops_list
 
+
+@router.get("/purchase/", response_model=list[schemas.PurchaseResponse])
+def list_purchase(commons: CommonsDep, db: Session = Depends(get_db)):
+    purchase_list = crud.list_purchase(db=db, skip=commons.skip, limit=commons.limit)
+    return purchase_list
+
+
+@router.post("/purchase/", response_model=schemas.PurchaseResponse)
+def create_purchase(purchase: schemas.PurchaseCreate, db: Session = Depends(get_db)):
+    return crud.create_purchase(db, purchase=purchase)
+
+
+@router.get("/drink_record/", response_model=list[schemas.DrinkRecordResponse])
+def list_drink_record(commons: CommonsDep, db: Session = Depends(get_db)):
+    drink_record_list = crud.list_drink_record(db=db, skip=commons.skip, limit=commons.limit)
+    return drink_record_list
+
+
+@router.post("/drink_record/", response_model=schemas.DrinkRecordResponse)
+def create_drink_record(drink_record: schemas.DrinkRecordCreate, db: Session = Depends(get_db)):
+    return crud.create_drink_record(db, drink_record=drink_record)

@@ -80,9 +80,50 @@ def create_hops(db: Session, hops: schemas.HopsCreate):
     db.refresh(db_hps)
     return db_hps
     
+
 def relate_hops_to_beer(db: Session, hops_id: int, beer_id: int):
     db_relation = models.RelationHopsBeerDB(hops_id=hops_id, beer_id=beer_id, id=0)
     db.add(db_relation)
     db.commit()
     db.refresh(db_relation)
     return db_relation
+
+
+#?=============================
+#? Purchase
+#?=============================
+def get_purchase(db: Session, purchase_id: int):
+    return db.query(models.PurchaseDB).filter(models.PurchaseDB.id == purchase_id).first()
+
+
+def list_purchase(db: Session, skip: int = 0, limit: int = 100):
+    query = db.query(models.PurchaseDB)
+    return query.offset(skip).limit(limit).all()
+
+
+def create_purchase(db: Session, purchase: schemas.PurchaseCreate):
+    db_purchase = models.PurchaseDB(**purchase.dict())
+    db.add(db_purchase)
+    db.commit()
+    db.refresh(db_purchase)
+    return db_purchase
+
+
+#?=============================
+#? DrinkRecord
+#?=============================
+def get_drink_record(db: Session, drink_record_id: int):
+    return db.query(models.DrinkRecordDB).filter(models.DrinkRecordDB.id == drink_record_id).first()
+
+
+def list_drink_record(db: Session, skip: int = 0, limit: int = 100):
+    query = db.query(models.DrinkRecordDB)
+    return query.offset(skip).limit(limit).all()
+
+
+def create_drink_record(db: Session, drink_record: schemas.DrinkRecordCreate):
+    db_drink_record = models.DrinkRecordDB(**drink_record.dict())
+    db.add(db_drink_record)
+    db.commit()
+    db.refresh(db_drink_record)
+    return db_drink_record
