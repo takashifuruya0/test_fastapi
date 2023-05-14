@@ -1,6 +1,16 @@
 from typing import Annotated
+from functools import lru_cache
 from fastapi import Depends, Cookie, Header
 from fastapi.exceptions import HTTPException
+from config import Settings
+
+
+#?--------------------------
+#? Config
+#?--------------------------
+@lru_cache()
+def get_settings():
+    return Settings()
 
 
 #?--------------------------

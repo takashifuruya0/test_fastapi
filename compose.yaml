@@ -1,0 +1,11 @@
+version: '3.9'
+services:
+  app:
+    build: .
+    ports:
+      - 8001:8000
+    environment:
+      - debug=true
+      - SQLALCHEMY_DATABASE_URL=sqlite:///./sql.db
+    volumes:
+      - ./app:/app
