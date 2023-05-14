@@ -1,4 +1,4 @@
-from fastapi import routing, Depends
+from fastapi import routing, Depends, status
 from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session
 from depends import CommonsDep
@@ -59,7 +59,9 @@ def create_beer(beer: schemas.BeerCreate, hops: list[int], db: Session = Depends
 def create_hops(hops: schemas.HopsCreate, db: Session = Depends(get_db)):
     db_hops = crud.get_hops_by_name(db=db, hops_name=hops.name)
     if db_hops:
-        raise HTTPException(status_code=400, detail=f"{hops.name} is alreadey registered")
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, 
+            detail=f"{hops.name} is alreadey registered")
     return crud.create_hops(db, hops=hops)
 
 
@@ -82,11 +84,15 @@ def create_purchase(purchase: schemas.PurchaseCreate, db: Session = Depends(get_
 
 
 @router.get("/drink_record/", response_model=list[schemas.DrinkRecordResponse])
-def list_drink_record(commons: CommonsDep, db: Session = Depends(get_db)):
-    drink_record_list = crud.list_drink_record(db=db, skip=commons.skip, limit=commons.limit)
+def list_drink_record(commons: CommonsDep, purchase_id: int|None = None, db: Session = Depends(get_db)):
+    drink_record_list = crud.list_drink_record(
+        db=db, skip=commons.skip, limit=commons.limit, purchase_id=purchase_id)
     return drink_record_list
 
 
 @router.post("/drink_record/", response_model=schemas.DrinkRecordResponse)
 def create_drink_record(drink_record: schemas.DrinkRecordCreate, db: Session = Depends(get_db)):
-    return crud.create_drink_record(db, drink_record=drink_record)
+    try:
+        return crud.create_drink_record(db, drink_record=drink_record)
+    except crud.ValidationError as ve:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=ve)

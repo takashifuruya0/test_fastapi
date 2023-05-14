@@ -30,6 +30,7 @@ class BeerDB(Base):
     price_jpy = Column(Integer, index=True, nullable=True)
     price = Column(Float, index=True, nullable=True)
     currency = Column(String, index=True, nullable=True, default="JPY")
+    amount = Column(Integer, default=500, index=True)
 
     maker = relationship("MakerDB", back_populates="beers")
     hops = relationship("HopsDB", secondary="relation_hops_beer", back_populates="beers")
@@ -67,6 +68,13 @@ class PurchaseDB(Base):
 
     drink_records = relationship("DrinkRecordDB", back_populates="purchase")
     beer = relationship("BeerDB", back_populates="purchases")
+
+    @property
+    def amount_drink(self)->int:
+        total = 0
+        for dr in self.drink_records:
+            total += dr.amount
+        return total
 
 
 class DrinkRecordDB(Base):

@@ -1,5 +1,5 @@
 from enum import Enum
-from pydantic import BaseModel, Field, EmailStr
+from pydantic import BaseModel, Field, PositiveInt
 from datetime import date
 
 
@@ -57,6 +57,7 @@ class Beer(BaseModel):
     ibu: int|None
     abv: float|None
     style: BeerStyle = BeerStyle.DEFAULT
+    amount: PositiveInt
 
     class Config:
         orm_mode = True
@@ -86,7 +87,7 @@ class Purchase(BaseModel):
 class DrinkRecord(BaseModel):
     is_active: bool
     description: str|None = None
-    amount: int
+    amount: PositiveInt
     date: date
     # purchase: Purchase
 

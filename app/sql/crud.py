@@ -3,6 +3,13 @@ from sql import models, schemas
 
 
 #?=============================
+#? ValidationError
+#?=============================
+class ValidationError(Exception):
+    pass
+
+
+#?=============================
 #? Maker
 #?=============================
 def get_maker(db: Session, maker_id: int):
@@ -116,13 +123,32 @@ def get_drink_record(db: Session, drink_record_id: int):
     return db.query(models.DrinkRecordDB).filter(models.DrinkRecordDB.id == drink_record_id).first()
 
 
-def list_drink_record(db: Session, skip: int = 0, limit: int = 100):
+def list_drink_record(db: Session, skip: int = 0, limit: int = 100, purchase_id: int|None = None):
     query = db.query(models.DrinkRecordDB)
+    if purchase_id:
+        query = query.filter(models.DrinkRecordDB.purchase_id == purchase_id)
     return query.offset(skip).limit(limit).all()
 
 
 def create_drink_record(db: Session, drink_record: schemas.DrinkRecordCreate):
+    db_purchase = get_purchase(db=db, purchase_id=drink_record.purchase_id)
     db_drink_record = models.DrinkRecordDB(**drink_record.dict())
+    # validation
+    if db_purchase.amount_drink + db_drink_record.amount > db_purchase.beer.amount:
+        raise ValidationError("Total amount is larger than beer.amount")
+    # check updating a purchase is required
+    update_purchase = False
+    if db_purchase.amount_drink == 0:
+        # untapped
+        db_purchase.date_untapped = db_drink_record.date
+        update_purchase = True
+    if db_purchase.amount_drink + db_drink_record.amount == db_purchase.beer.amount:
+        # emptied
+        db_purchase.date_emptied = db_drink_record.date
+        update_purchase = True
+    if update_purchase:
+        db.add(db_purchase)
+    # add drink_record
     db.add(db_drink_record)
     db.commit()
     db.refresh(db_drink_record)
